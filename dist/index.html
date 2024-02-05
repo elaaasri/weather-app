@@ -4,13 +4,78 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather Forecast</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap"
+      rel="stylesheet"
+    />
+    <script
+      src="https://kit.fontawesome.com/96f630ca48.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="main.js" defer></script>
   </head>
+  <!-- <img
+  id="current-weather-icon"
+  alt="Weather Icon 1000"
+  src="https://perugi.github.io/weather-forecast/a42b7aecb402f64a710e.svg"
+></img>; -->
   <body>
-    <h1>Weather app</h1>
-    <form method="dialog">
-      <input type="text" name="" id="input" />
-      <input type="submit" name="" id="submit" />
-    </form>
+    <main>
+      <div id="weather-card-container">
+        <!-- weather card header -->
+        <div id="weather-card-header">
+          <h2>Weather App</h2>
+          <form method="dialog" id="search-form">
+            <input
+              type="text"
+              name="input"
+              id="input"
+              placeholder="Search Location..."
+            />
+            <button type="submit" id="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+        </div>
+        <!-- weather card main -->
+        <div id="weather-card-main">
+          <div id="weather-info-container">
+            <div id="weather-info-date-container">
+              <div id="weather-info-time">12:30</div>
+              <div id="weather-info-date">monday,15 feb</div>
+            </div>
+            <div id="weather-info-description">
+              <div id="weather-info-description1">15C°</div>
+              <div id="weather-info-description2">15C°</div>
+              <div id="weather-info-description3">15C°</div>
+              <div id="weather-info-description4">15C°</div>
+              <div id="weather-info-description5">15C°</div>
+            </div>
+          </div>
+          <div id="weather-place-container">
+            <div id="weather-condition">zbe</div>
+            <div id="weather-place-country">morocco</div>
+            <div id="weather-place-city">khouribga</div>
+          </div>
+        </div>
+        <!-- weather card footer -->
+        <div id="forecast-daily-container">
+          <div id="current-day-plus-one">1</div>
+          <div id="current-day-plus-two">2</div>
+          <div id="current-day-plus-three">3</div>
+          <div id="current-day-plus-four">4</div>
+          <div id="current-day-plus-five">5</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      Copyright © &nbsp;
+      <p>elaaasri</p>
+      &nbsp; &nbsp;
+      <a href="https://github.com/elaaasri">
+        <i class="fab fa-github"></i>
+      </a>
+    </footer>
   </body>
 </html>

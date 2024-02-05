@@ -6,24 +6,71 @@ const submit = document.getElementById("submit");
 const getData = async () => {
   try {
     const cityName = input.value;
+    // const response = await fetch(
+    //   `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+    // );
+    // const response = await fetch(
+    //   `http://api.openweathermap.org/data/2.5/forecast?q=rabat&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+    // );
     const response = await fetch(
-      `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+      `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=rabat`
     );
-    processJsonData(response);
+    return response;
   } catch (err) {
     console.error("Error Fetching Data:", err);
   }
 };
-
-const processJsonData = async (data) => {
-  const jsonData = await data.json();
+const processJsonData = async (response) => {
+  const jsonData = await response.json();
+  const {
+    location: { localtime, country, name: cityName },
+    current: {
+      condition: { text: condition },
+    },
+  } = jsonData;
   console.log(jsonData);
-  return jsonData;
+  const requiredJsonData = {
+    localtime,
+    country,
+    cityName,
+    condition,
+  };
+  return requiredJsonData;
 };
-submit.addEventListener("click", getData);
 
-// const response = await fetch(
-//   `http://api.openweathermap.org/data/2.5/forecast?q=rabat&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+const setWeatherPlaceAndCondition = (condition, country, city) => {
+  const weatherCondition = document.getElementById("weather-condition");
+  const weatherCountry = document.getElementById("weather-place-country");
+  const weatherCity = document.getElementById("weather-place-city");
+  weatherCondition.textContent = condition;
+  weatherCountry.textContent = country;
+  weatherCity.textContent = city;
+};
+
+const setWeatherTime = (localtime) => {
+  const weatherTime = document.getElementById("weather-info-time");
+  const weatherDate = document.getElementById("weather-info-date");
+  const date = new Date(localtime);
+  const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
+  const day = date.getDate();
+  const month = date.toLocaleString("en-us", { month: "short" });
+  const time = date.toLocaleString("en-us", {
+    hour: "numeric",
+    minute: "numeric",
+  });
+  weatherTime.textContent = time;
+  weatherDate.textContent = `${dayOfWeek}, ${day} ${month}.`;
+};
+
+submit.onclick = () => {
+  getData()
+    .then((response) => processJsonData(response))
+    .then((requiredJsonData) => {
+      const { localtime, country, cityName, condition } = requiredJsonData;
+      setWeatherTime(localtime);
+      setWeatherPlaceAndCondition(condition, country, cityName);
+    });
+};
 
 // const processJsonData = async (data) => {
 //   const jsonData = await data.json();
