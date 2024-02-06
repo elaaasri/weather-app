@@ -24,7 +24,6 @@
       <div id="weather-card-container">
         <!-- weather card header -->
         <div id="weather-card-header">
-          <h2>Weather App</h2>
           <form method="dialog" id="search-form">
             <input
               type="text"
@@ -37,6 +36,9 @@
             </button>
           </form>
         </div>
+        <span id="search-error" style="display: none">
+          Location not found. Search must be City, State or Country.
+        </span>
         <!-- weather card main -->
         <div id="weather-card-main">
           <div id="weather-info-container">
@@ -44,16 +46,27 @@
               <div id="weather-info-time">12:30</div>
               <div id="weather-info-date">monday,15 feb</div>
             </div>
-            <div id="weather-details">
-              <div id="weather-temperature">15C°</div>
-              <div id="weather-humidity">15C°</div>
-              <div id="weather-wind">15C°</div>
+            <div id="weather-details-container">
+              <div id="weather-temperature-container">
+                <i class="fa-solid fa-temperature-high"></i>
+                <div id="weather-temperature">15C°</div>
+              </div>
+              <div id="weather-humidity-container">
+                <i class="fa-solid fa-droplet"></i>
+                <div id="weather-humidity">15C°</div>
+              </div>
+              <div id="weather-wind-container">
+                <i class="fa-solid fa-wind"></i>
+                <div id="weather-wind">15C°</div>
+              </div>
             </div>
           </div>
-          <div id="weather-place-container">
-            <div id="weather-condition">zbe</div>
-            <div id="weather-place-country">morocco</div>
-            <div id="weather-place-city">khouribga</div>
+          <div id="weather-place-and-condition-container">
+            <div id="weather-condition-container">
+              <div id="weather-condition">Partly cloudy</div>
+              <img src="" id="weather-condition-icon" style="display: none" />
+            </div>
+            <div id="weather-place-city-and-country">Morocco, Rabat.</div>
           </div>
         </div>
         <!-- weather card footer -->
@@ -63,6 +76,7 @@
           <div id="current-day-plus-three">3</div>
           <div id="current-day-plus-four">4</div>
           <div id="current-day-plus-five">5</div>
+          <div id="current-day-plus-six">6</div>
         </div>
       </div>
     </main>

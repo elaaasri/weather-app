@@ -1,38 +1,62 @@
 import "./style.css";
-
+import {
+  setWeatherTime,
+  setWeatherPlaceAndCondition,
+  setWeatherDetails,
+  showSearchError,
+  hideSearchError,
+} from "./dom.js";
+// dom :
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
-
-const getData = async () => {
+// fetch weather data :
+const getWeatherData = async () => {
   try {
     const cityName = input.value;
-    // const response = await fetch(
-    //   `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
-    // );
-    // const response = await fetch(
-    //   `http://api.openweathermap.org/data/2.5/forecast?q=rabat&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
-    // );
-    const response = await fetch(
-      `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=rabat`
+    const weatherDataResponse = await fetch(
+      `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=${cityName}`
     );
-    return response;
+    // handle weather data error :
+    if (!weatherDataResponse.ok) {
+      showSearchError();
+    } else hideSearchError();
+
+    return weatherDataResponse;
   } catch (err) {
-    console.error("Error Fetching Data:", err);
+    console.error("Error Fetching Weather Data:", err);
   }
 };
+// fetch weather forcast data :
+// const getWeatherForcast = async () => {
+//   try {
+//     const cityName = input.value;
+//     const weatherForcastResponse = await fetch(
+//       `http://api.openweathermap.org/data/2.5/forecast?q=khouribga&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+//     );
+//     return weatherForcastResponse;
+//   } catch (err) {
+//     console.error("Error Fetching Forcast Data:", err);
+//   }
+// };
+
+//
 const processJsonData = async (response) => {
   const jsonData = await response.json();
-  // destructuring data :
+  // destructuring desirddata from jsonData :
   const {
     location: { localtime, country, name: cityName },
     current: {
-      condition: { text: condition },
+      condition: { text: condition, icon },
+      temp_c,
+      // temp_f,
+      humidity,
+      // wind_mph,
+      wind_kph,
     },
-    current: { temp_c, temp_f, humidity, wind_mph, wind_kph },
   } = jsonData;
+
   console.log(jsonData);
-  console.log(jsonData.current);
-  // returns desired data :
+  // create desiredData object using destructured data :
   const desiredData = {
     localtime,
     country,
@@ -40,49 +64,15 @@ const processJsonData = async (response) => {
     condition,
     temp_c,
     humidity,
-    wind_mph,
+    wind_kph,
+    icon,
   };
   return desiredData;
 };
-
-const setWeatherPlaceAndCondition = (condition, country, city) => {
-  const weatherCondition = document.getElementById("weather-condition");
-  const weatherCountry = document.getElementById("weather-place-country");
-  const weatherCity = document.getElementById("weather-place-city");
-  weatherCondition.textContent = condition;
-  weatherCountry.textContent = country;
-  weatherCity.textContent = city;
-};
-
-const setWeatherTime = (localTime) => {
-  const weatherTime = document.getElementById("weather-info-time");
-  const weatherDate = document.getElementById("weather-info-date");
-  const date = new Date(localTime);
-  const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
-  const day = date.getDate();
-  const month = date.toLocaleString("en-us", { month: "short" });
-  const time = date.toLocaleString("en-us", {
-    hour: "numeric",
-    minute: "numeric",
-  });
-  weatherTime.textContent = time;
-  weatherDate.textContent = `${dayOfWeek}, ${day} ${month}.`;
-};
-const setWeatherDetails = (temperature, humidity, windSpeed) => {
-  const weatherTemperature = document.getElementById("weather-temperature");
-  const weatherHumidity = document.getElementById("weather-humidity");
-  const weatherWind = document.getElementById("weather-wind");
-  console.log(weatherTemperature);
-  console.log(weatherHumidity);
-  console.log(weatherWind);
-  weatherTemperature.textContent = temperature;
-  weatherHumidity.textContent = humidity;
-  weatherWind.textContent = windSpeed;
-};
-
+// submit event :
 submit.onclick = () => {
-  getData()
-    .then((response) => processJsonData(response))
+  getWeatherData()
+    .then((dataResponse) => processJsonData(dataResponse))
     .then((desiredData) => {
       // destructuring desired data after processing it :
       const {
@@ -92,16 +82,21 @@ submit.onclick = () => {
         condition,
         temp_c,
         humidity,
-        wind_mph,
+        wind_kph,
+        icon,
       } = desiredData;
       // set weather time :
       setWeatherTime(localtime);
       // set weather place and condition
-      setWeatherPlaceAndCondition(condition, country, cityName);
+      setWeatherPlaceAndCondition(condition, icon, country, cityName);
       // set weather details :
-      setWeatherDetails(temp_c, humidity, wind_mph);
-    });
+      setWeatherDetails(temp_c, humidity, wind_kph);
+    })
+    .catch((err) => console.log("REJECTED!", err));
 };
+// working on using promise.all to fetch both responses.
+
+// https://openweathermap.org/img/wn/10d@2x.png ===> api icon
 
 // const processJsonData = async (data) => {
 //   const jsonData = await data.json();
