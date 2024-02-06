@@ -22,20 +22,27 @@ const getData = async () => {
 };
 const processJsonData = async (response) => {
   const jsonData = await response.json();
+  // destructuring data :
   const {
     location: { localtime, country, name: cityName },
     current: {
       condition: { text: condition },
     },
+    current: { temp_c, temp_f, humidity, wind_mph, wind_kph },
   } = jsonData;
   console.log(jsonData);
-  const requiredJsonData = {
+  console.log(jsonData.current);
+  // returns desired data :
+  const desiredData = {
     localtime,
     country,
     cityName,
     condition,
+    temp_c,
+    humidity,
+    wind_mph,
   };
-  return requiredJsonData;
+  return desiredData;
 };
 
 const setWeatherPlaceAndCondition = (condition, country, city) => {
@@ -47,10 +54,10 @@ const setWeatherPlaceAndCondition = (condition, country, city) => {
   weatherCity.textContent = city;
 };
 
-const setWeatherTime = (localtime) => {
+const setWeatherTime = (localTime) => {
   const weatherTime = document.getElementById("weather-info-time");
   const weatherDate = document.getElementById("weather-info-date");
-  const date = new Date(localtime);
+  const date = new Date(localTime);
   const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
   const day = date.getDate();
   const month = date.toLocaleString("en-us", { month: "short" });
@@ -61,14 +68,38 @@ const setWeatherTime = (localtime) => {
   weatherTime.textContent = time;
   weatherDate.textContent = `${dayOfWeek}, ${day} ${month}.`;
 };
+const setWeatherDetails = (temperature, humidity, windSpeed) => {
+  const weatherTemperature = document.getElementById("weather-temperature");
+  const weatherHumidity = document.getElementById("weather-humidity");
+  const weatherWind = document.getElementById("weather-wind");
+  console.log(weatherTemperature);
+  console.log(weatherHumidity);
+  console.log(weatherWind);
+  weatherTemperature.textContent = temperature;
+  weatherHumidity.textContent = humidity;
+  weatherWind.textContent = windSpeed;
+};
 
 submit.onclick = () => {
   getData()
     .then((response) => processJsonData(response))
-    .then((requiredJsonData) => {
-      const { localtime, country, cityName, condition } = requiredJsonData;
+    .then((desiredData) => {
+      // destructuring desired data after processing it :
+      const {
+        localtime,
+        country,
+        cityName,
+        condition,
+        temp_c,
+        humidity,
+        wind_mph,
+      } = desiredData;
+      // set weather time :
       setWeatherTime(localtime);
+      // set weather place and condition
       setWeatherPlaceAndCondition(condition, country, cityName);
+      // set weather details :
+      setWeatherDetails(temp_c, humidity, wind_mph);
     });
 };
 
