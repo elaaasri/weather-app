@@ -20,7 +20,6 @@ const getWeatherData = async () => {
     if (!weatherDataResponse.ok) {
       showSearchError();
     } else hideSearchError();
-    // get weather json data :
     const weatherJsonData = await weatherDataResponse.json();
     return weatherJsonData;
   } catch (err) {
@@ -46,11 +45,10 @@ const getWeatherForecast = async () => {
   }
 };
 // handle get weather data promise chain :
-function getWeatherDataPromiseChain() {
+const getWeatherDataPromiseChain = () => {
   getWeatherData()
     .then((weatherJsonData) => getDesiredWeatherData(weatherJsonData))
     .then((desiredData) => {
-      // set weather time :
       setWeatherTime(desiredData.localtime);
       // set weather place and condition
       setWeatherPlaceAndCondition(
@@ -65,47 +63,56 @@ function getWeatherDataPromiseChain() {
         desiredData.humidity,
         desiredData.wind_kph
       );
-    })
-    .catch((err) => console.log("REJECTED!", err));
-}
+    });
+};
 // submit event :
 submit.onclick = () => {
   getWeatherDataPromiseChain();
   getWeatherForecastPromiseChain();
 };
 // handle get weather forecast promise chain :
-function getWeatherForecastPromiseChain() {
+const getWeatherForecastPromiseChain = () => {
   getWeatherForecast()
-    .then((forecastJsonData) => getDesiredWeatherForecast(forecastJsonData))
+    .then((forecastJsonData) => getWeatherForecastDays(forecastJsonData))
+    .then((forecastDays) => getDesiredWeatherForecastData(forecastDays))
     .then((res) => console.log(res));
-}
-const getDesiredWeatherForecast = (weatherForecastJsonData) => {
-  console.log(weatherForecastJsonData);
-  // const processJsonData = async (data) => {
-  //   const jsonData = await data.json();
-  //   // FUTURE WEATHER SOLVED :
-  //   // let arr = [];
-  //   // for (const list of jsonData.list) {
-  //   //   arr.push(list.dt_txt);
-  //   // }
-  //   // arr.map((date) => {
-  //   //   const pattern = /\d{4}-\d{2}-\d{2}\s00:00:00/gi;
-  //   //   console.log(pattern.test(date));
-  //   //   console.log(date.match(pattern));
-  //   // });
+};
+// getDesiredWeatherForecast
+const getWeatherForecastDays = (weatherForecastJsonData) => {
+  const weatherForecastDaysArray = [];
+  const pattern = /\d{4}-\d{2}-\d{2}\s12:00:00/gi;
+  const { list: listArray } = weatherForecastJsonData;
 
-  //   // console.log(arr);
-  //   console.log(jsonData);
-  //   return jsonData;
-  // };
+  for (const list of listArray) {
+    const targetDate = list.dt_txt;
+    if (pattern.test(targetDate)) {
+      weatherForecastDaysArray.push(list);
+    }
+  }
+  return weatherForecastDaysArray;
+};
 
-  // `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=${cityName}`
-  // jsonData.cod === 400
-
-  // const pattern2 = /\d{4}-\d{2}-\d{2}\s00:00:00/gi;
-  // const str2 = "2024-02-04 00:00:00";
-  // console.log(pattern2.test(str2));
-  // console.log(str2.match(pattern2));
+const getDesiredWeatherForecastData = (forecastDays) => {
+  const desiredWeatherForecastArray = [];
+  // console.log(forecastDays);
+  for (const day of forecastDays) {
+    // console.log(day);
+    const {
+      dt_txt: date,
+      main: { temp_max, temp_min },
+      weather: [{ description, icon: weatherIcon }],
+      wind: { speed: windSpeed },
+    } = day;
+    desiredWeatherForecastArray.push({
+      description,
+      date,
+      weatherIcon,
+      temp_max,
+      temp_min,
+      windSpeed,
+    });
+  }
+  return desiredWeatherForecastArray;
 };
 
 const getDesiredWeatherData = (weatherJsonData) => {
@@ -135,7 +142,6 @@ const getDesiredWeatherData = (weatherJsonData) => {
   return desiredWeatherdData;
 };
 
-// working on using promise.all to fetch both responses.
 // https://openweathermap.org/img/wn/10d@2x.png ===> api icon
 
 // const processJsonData = async (data) => {
