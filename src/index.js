@@ -6,7 +6,8 @@ import {
   showSearchError,
   hideSearchError,
   setForecastDescription,
-  setForecastDate,
+  setForecastDay,
+  setForecastIcon,
 } from "./dom.js";
 // dom :
 const input = document.getElementById("input");
@@ -79,7 +80,8 @@ const getWeatherForecastPromiseChain = () => {
     .then(getWeatherForecastDays)
     .then(getDesiredWeatherForecastData)
     .then(setForecastDescription)
-    .then(setForecastDate);
+    .then(setForecastDay)
+    .then(setForecastIcon);
 };
 
 // getDesiredWeatherForecast

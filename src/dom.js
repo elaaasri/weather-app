@@ -47,7 +47,7 @@ const hideSearchError = () => {
   const searchError = document.getElementById("search-error");
   searchError.style.display = "none";
 };
-
+// set forecast description :
 const setForecastDescription = (desiredForecastData) => {
   const allForecastDescriptions = document.querySelectorAll(
     ".forecast-description"
@@ -57,14 +57,24 @@ const setForecastDescription = (desiredForecastData) => {
   });
   return desiredForecastData;
 };
-
-const setForecastDate = (desiredForecastData) => {
+// set forecast day :
+const setForecastDay = (desiredForecastData) => {
   const allForecastDates = document.querySelectorAll(".forecast-date");
   [...allForecastDates].map((ele, index) => {
     const date = new Date(desiredForecastData[index].date);
-    const dayOfWeek = date.toLocaleString("en-us", { weekday: "short" });
+    const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
     ele.textContent = dayOfWeek;
   });
+  return desiredForecastData;
+};
+// set forecast icon :
+const setForecastIcon = (desiredForecastData) => {
+  const allForecastIcons = document.querySelectorAll(".forecast-weatherIcon");
+  [...allForecastIcons].map((ele, index) => {
+    const iconSrc = `https://openweathermap.org/img/wn/${desiredForecastData[index].weatherIcon}@2x.png`;
+    ele.src = iconSrc;
+  });
+  return desiredForecastData;
 };
 
 export {
@@ -74,5 +84,6 @@ export {
   showSearchError,
   hideSearchError,
   setForecastDescription,
-  setForecastDate,
+  setForecastDay,
+  setForecastIcon,
 };
