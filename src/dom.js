@@ -47,10 +47,32 @@ const hideSearchError = () => {
   const searchError = document.getElementById("search-error");
   searchError.style.display = "none";
 };
+
+const setForecastDescription = (desiredForecastData) => {
+  const allForecastDescriptions = document.querySelectorAll(
+    ".forecast-description"
+  );
+  [...allForecastDescriptions].map((ele, index) => {
+    ele.textContent = desiredForecastData[index].description;
+  });
+  return desiredForecastData;
+};
+
+const setForecastDate = (desiredForecastData) => {
+  const allForecastDates = document.querySelectorAll(".forecast-date");
+  [...allForecastDates].map((ele, index) => {
+    const date = new Date(desiredForecastData[index].date);
+    const dayOfWeek = date.toLocaleString("en-us", { weekday: "short" });
+    ele.textContent = dayOfWeek;
+  });
+};
+
 export {
   setWeatherPlaceAndCondition,
   setWeatherTime,
   setWeatherDetails,
   showSearchError,
   hideSearchError,
+  setForecastDescription,
+  setForecastDate,
 };

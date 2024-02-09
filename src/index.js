@@ -5,6 +5,8 @@ import {
   setWeatherDetails,
   showSearchError,
   hideSearchError,
+  setForecastDescription,
+  setForecastDate,
 } from "./dom.js";
 // dom :
 const input = document.getElementById("input");
@@ -49,6 +51,7 @@ const getWeatherDataPromiseChain = () => {
   getWeatherData()
     .then((weatherJsonData) => getDesiredWeatherData(weatherJsonData))
     .then((desiredData) => {
+      // set weather time :
       setWeatherTime(desiredData.localtime);
       // set weather place and condition
       setWeatherPlaceAndCondition(
@@ -73,10 +76,12 @@ submit.onclick = () => {
 // handle get weather forecast promise chain :
 const getWeatherForecastPromiseChain = () => {
   getWeatherForecast()
-    .then((forecastJsonData) => getWeatherForecastDays(forecastJsonData))
-    .then((forecastDays) => getDesiredWeatherForecastData(forecastDays))
-    .then((res) => console.log(res));
+    .then(getWeatherForecastDays)
+    .then(getDesiredWeatherForecastData)
+    .then(setForecastDescription)
+    .then(setForecastDate);
 };
+
 // getDesiredWeatherForecast
 const getWeatherForecastDays = (weatherForecastJsonData) => {
   const weatherForecastDaysArray = [];
@@ -101,7 +106,6 @@ const getDesiredWeatherForecastData = (forecastDays) => {
       dt_txt: date,
       main: { temp_max, temp_min },
       weather: [{ description, icon: weatherIcon }],
-      wind: { speed: windSpeed },
     } = day;
     desiredWeatherForecastArray.push({
       description,
@@ -109,7 +113,6 @@ const getDesiredWeatherForecastData = (forecastDays) => {
       weatherIcon,
       temp_max,
       temp_min,
-      windSpeed,
     });
   }
   return desiredWeatherForecastArray;
