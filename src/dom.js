@@ -62,7 +62,7 @@ const setForecastDay = (desiredForecastData) => {
   const allForecastDates = document.querySelectorAll(".forecast-date");
   [...allForecastDates].map((ele, index) => {
     const date = new Date(desiredForecastData[index].date);
-    const dayOfWeek = date.toLocaleString("en-us", { weekday: "long" });
+    const dayOfWeek = date.toLocaleString("en-us", { weekday: "short" });
     ele.textContent = dayOfWeek;
   });
   return desiredForecastData;

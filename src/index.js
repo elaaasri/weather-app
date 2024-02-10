@@ -13,44 +13,28 @@ import {
 // dom :
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
-// window.onload = () => {
-//   getWeatherData();
-// };
-// fetch weather data :
-const getWeatherData = async () => {
-  try {
-    const cityName = input.value;
-    const weatherDataResponse = await fetch(
-      `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=${cityName}`
-    );
-    // handle weather data error :
-    if (!weatherDataResponse.ok) {
-      showSearchError();
-    } else hideSearchError();
-    const weatherJsonData = await weatherDataResponse.json();
-    return weatherJsonData;
-  } catch (err) {
-    console.error("Error Fetching Weather Data:", err);
-  }
+let cityName = input.value;
+// set default weather place :
+const setDefaultPlace = () => {
+  const defaultPlace = "Morocco";
+  cityName = defaultPlace;
+  getWeatherDataPromiseChain();
+  getWeatherForecastPromiseChain();
 };
-// fetch weather forcast :
-const getWeatherForecast = async () => {
-  try {
-    const cityName = input.value;
-    const forecastDataResponse = await fetch(
-      `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
-    );
-    // handle weather forecast error :
-    if (!forecastDataResponse.ok) {
-      showSearchError();
-    } else hideSearchError();
-    // get weather forecast json data :
-    const forecastJsonData = await forecastDataResponse.json();
-    return forecastJsonData;
-  } catch (err) {
-    console.error("Error Fetching Forcast Data:", err);
-  }
+// window event to set default place :
+window.addEventListener("load", setDefaultPlace);
+// reset city name (input value):
+const setNewPlace = () => {
+  cityName = "";
+  cityName = input.value;
 };
+// submit event :
+submit.onclick = () => {
+  setNewPlace();
+  getWeatherDataPromiseChain();
+  getWeatherForecastPromiseChain();
+};
+// weather data api :
 // handle get weather data promise chain :
 const getWeatherDataPromiseChain = () => {
   getWeatherData()
@@ -73,10 +57,46 @@ const getWeatherDataPromiseChain = () => {
       );
     });
 };
-// submit event :
-submit.onclick = () => {
-  getWeatherDataPromiseChain();
-  getWeatherForecastPromiseChain();
+// fetch weather api :
+const getWeatherData = async () => {
+  try {
+    const weatherDataResponse = await fetch(
+      `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=${cityName}`
+    );
+    // handle weather data error :
+    if (!weatherDataResponse.ok) {
+      showSearchError();
+    } else hideSearchError();
+    const weatherJsonData = await weatherDataResponse.json();
+    return weatherJsonData;
+  } catch (err) {
+    console.error("Error Fetching Weather Data:", err);
+  }
+};
+// get desired weather forecast data :
+const getDesiredWeatherData = (weatherJsonData) => {
+  // destructuring desired data from jsonData :
+  const {
+    location: { localtime, country, name: cityName },
+    current: {
+      condition: { text: condition, icon: weatherIcon },
+      temp_c,
+      humidity,
+      wind_kph,
+    },
+  } = weatherJsonData;
+  // create desiredData object using destructured data :
+  const desiredWeatherdData = {
+    localtime,
+    country,
+    cityName,
+    condition,
+    temp_c,
+    humidity,
+    wind_kph,
+    weatherIcon,
+  };
+  return desiredWeatherdData;
 };
 // handle get weather forecast promise chain :
 const getWeatherForecastPromiseChain = () => {
@@ -87,6 +107,23 @@ const getWeatherForecastPromiseChain = () => {
     .then(setForecastDay)
     .then(setForecastIcon)
     .then(setForecastTempMaxAndMin);
+};
+// fetch forcast api :
+const getWeatherForecast = async () => {
+  try {
+    const forecastDataResponse = await fetch(
+      `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+    );
+    // handle weather forecast error :
+    if (!forecastDataResponse.ok) {
+      showSearchError();
+    } else hideSearchError();
+    // get weather forecast json data :
+    const forecastJsonData = await forecastDataResponse.json();
+    return forecastJsonData;
+  } catch (err) {
+    console.error("Error Fetching Forcast Data:", err);
+  }
 };
 // get 5 forecast days :
 const getForecastDays = (forecastJsonData) => {
@@ -120,29 +157,4 @@ const getDesiredForecastData = (forecastDays) => {
     });
   }
   return desiredForecastArray;
-};
-// get desired weather forecast data :
-const getDesiredWeatherData = (weatherJsonData) => {
-  // destructuring desired data from jsonData :
-  const {
-    location: { localtime, country, name: cityName },
-    current: {
-      condition: { text: condition, icon: weatherIcon },
-      temp_c,
-      humidity,
-      wind_kph,
-    },
-  } = weatherJsonData;
-  // create desiredData object using destructured data :
-  const desiredWeatherdData = {
-    localtime,
-    country,
-    cityName,
-    condition,
-    temp_c,
-    humidity,
-    wind_kph,
-    weatherIcon,
-  };
-  return desiredWeatherdData;
 };
