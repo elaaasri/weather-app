@@ -113,7 +113,7 @@ const getWeatherForecastPromiseChain = () => {
 const getWeatherForecast = async () => {
   try {
     const forecastDataResponse = await fetch(
-      `http://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=0a9c77ff65c2dc4d28a91e04fa19c9dd`
     );
     // handle weather forecast error :
     if (!forecastDataResponse.ok) {
