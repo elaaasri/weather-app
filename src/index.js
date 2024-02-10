@@ -8,10 +8,14 @@ import {
   setForecastDescription,
   setForecastDay,
   setForecastIcon,
+  setForecastTempMaxAndMin,
 } from "./dom.js";
 // dom :
 const input = document.getElementById("input");
 const submit = document.getElementById("submit");
+// window.onload = () => {
+//   getWeatherData();
+// };
 // fetch weather data :
 const getWeatherData = async () => {
   try {
@@ -50,7 +54,7 @@ const getWeatherForecast = async () => {
 // handle get weather data promise chain :
 const getWeatherDataPromiseChain = () => {
   getWeatherData()
-    .then((weatherJsonData) => getDesiredWeatherData(weatherJsonData))
+    .then(getDesiredWeatherData)
     .then((desiredData) => {
       // set weather time :
       setWeatherTime(desiredData.localtime);
@@ -77,19 +81,19 @@ submit.onclick = () => {
 // handle get weather forecast promise chain :
 const getWeatherForecastPromiseChain = () => {
   getWeatherForecast()
-    .then(getWeatherForecastDays)
-    .then(getDesiredWeatherForecastData)
+    .then(getForecastDays)
+    .then(getDesiredForecastData)
     .then(setForecastDescription)
     .then(setForecastDay)
-    .then(setForecastIcon);
+    .then(setForecastIcon)
+    .then(setForecastTempMaxAndMin);
 };
-
-// getDesiredWeatherForecast
-const getWeatherForecastDays = (weatherForecastJsonData) => {
+// get 5 forecast days :
+const getForecastDays = (forecastJsonData) => {
   const weatherForecastDaysArray = [];
+  // get 5 forecast days from list at mid day 12:00:00 :
   const pattern = /\d{4}-\d{2}-\d{2}\s12:00:00/gi;
-  const { list: listArray } = weatherForecastJsonData;
-
+  const { list: listArray } = forecastJsonData;
   for (const list of listArray) {
     const targetDate = list.dt_txt;
     if (pattern.test(targetDate)) {
@@ -98,18 +102,16 @@ const getWeatherForecastDays = (weatherForecastJsonData) => {
   }
   return weatherForecastDaysArray;
 };
-
-const getDesiredWeatherForecastData = (forecastDays) => {
-  const desiredWeatherForecastArray = [];
-  // console.log(forecastDays);
+// get desired forecast data :
+const getDesiredForecastData = (forecastDays) => {
+  const desiredForecastArray = [];
   for (const day of forecastDays) {
-    // console.log(day);
     const {
       dt_txt: date,
       main: { temp_max, temp_min },
       weather: [{ description, icon: weatherIcon }],
     } = day;
-    desiredWeatherForecastArray.push({
+    desiredForecastArray.push({
       description,
       date,
       weatherIcon,
@@ -117,9 +119,9 @@ const getDesiredWeatherForecastData = (forecastDays) => {
       temp_min,
     });
   }
-  return desiredWeatherForecastArray;
+  return desiredForecastArray;
 };
-
+// get desired weather forecast data :
 const getDesiredWeatherData = (weatherJsonData) => {
   // destructuring desired data from jsonData :
   const {
@@ -127,9 +129,7 @@ const getDesiredWeatherData = (weatherJsonData) => {
     current: {
       condition: { text: condition, icon: weatherIcon },
       temp_c,
-      // temp_f ,
       humidity,
-      // wind_mph,
       wind_kph,
     },
   } = weatherJsonData;
@@ -146,31 +146,3 @@ const getDesiredWeatherData = (weatherJsonData) => {
   };
   return desiredWeatherdData;
 };
-
-// https://openweathermap.org/img/wn/10d@2x.png ===> api icon
-
-// const processJsonData = async (data) => {
-//   const jsonData = await data.json();
-//   // FUTURE WEATHER SOLVED :
-//   // let arr = [];
-//   // for (const list of jsonData.list) {
-//   //   arr.push(list.dt_txt);
-//   // }
-//   // arr.map((date) => {
-//   //   const pattern = /\d{4}-\d{2}-\d{2}\s00:00:00/gi;
-//   //   console.log(pattern.test(date));
-//   //   console.log(date.match(pattern));
-//   // });
-
-//   // console.log(arr);
-//   console.log(jsonData);
-//   return jsonData;
-// };
-
-// `https://api.weatherapi.com/v1/current.json?key=5d38eab46801406988d170949242901&q=${cityName}`
-// jsonData.cod === 400
-
-// const pattern2 = /\d{4}-\d{2}-\d{2}\s00:00:00/gi;
-// const str2 = "2024-02-04 00:00:00";
-// console.log(pattern2.test(str2));
-// console.log(str2.match(pattern2));

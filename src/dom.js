@@ -67,7 +67,7 @@ const setForecastDay = (desiredForecastData) => {
   });
   return desiredForecastData;
 };
-// set forecast icon :
+// set forecast image icon :
 const setForecastIcon = (desiredForecastData) => {
   const allForecastIcons = document.querySelectorAll(".forecast-weatherIcon");
   [...allForecastIcons].map((ele, index) => {
@@ -76,7 +76,19 @@ const setForecastIcon = (desiredForecastData) => {
   });
   return desiredForecastData;
 };
-
+// set forecast max and min temperature :
+const setForecastTempMaxAndMin = (desiredForecastData) => {
+  const allForecastMaxTemp = document.querySelectorAll(".forecast-temp-max");
+  const allForecastMinTemp = document.querySelectorAll(".forecast-temp-min");
+  [...allForecastMaxTemp].map((ele, index) => {
+    const kelvinToCelsiusMaxTemp = desiredForecastData[index].temp_max - 273.15;
+    ele.textContent = ` ${parseInt(kelvinToCelsiusMaxTemp)} °C`;
+  });
+  [...allForecastMinTemp].map((ele, index) => {
+    const kelvinToCelsiusMinTemp = desiredForecastData[index].temp_min - 273.15;
+    ele.textContent = ` ${parseInt(kelvinToCelsiusMinTemp)} °C`;
+  });
+};
 export {
   setWeatherPlaceAndCondition,
   setWeatherTime,
@@ -86,4 +98,5 @@ export {
   setForecastDescription,
   setForecastDay,
   setForecastIcon,
+  setForecastTempMaxAndMin,
 };
