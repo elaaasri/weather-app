@@ -34,7 +34,7 @@ submit.onclick = () => {
   getWeatherDataPromiseChain();
   getWeatherForecastPromiseChain();
 };
-// weather data api :
+// ################## weather data api ##################
 // handle get weather data promise chain :
 const getWeatherDataPromiseChain = () => {
   getWeatherData()
@@ -98,6 +98,7 @@ const getDesiredWeatherData = (weatherJsonData) => {
   };
   return desiredWeatherdData;
 };
+// ################## forecast data api ##################
 // handle get weather forecast promise chain :
 const getWeatherForecastPromiseChain = () => {
   getWeatherForecast()

@@ -121,10 +121,6 @@ main {
 #weather-place-city-and-country {
   font-weight: bold;
 }
-#weather-condition-icon {
-  width: 80px;
-  height: 80px;
-}
 #weather-details-container {
   display: flex;
   flex-direction: column;
