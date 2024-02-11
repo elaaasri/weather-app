@@ -1,4 +1,5 @@
 import "./style.css";
+import "./images/icon.png";
 import {
   setWeatherTime,
   setWeatherPlaceAndCondition,
