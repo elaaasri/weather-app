@@ -1,6 +1,5 @@
 # Weather-App Created With HTML, CSS and JS.
 
- - Search a location for forecast data.
   - Find forecasts for any location.
   - Display daily forecast data.
   - Unique weather symbols for each forecast description.
